@@ -1,3 +1,4 @@
+#Calculation of the Bird and King formulation of the absorptive scattering factor fprime(s, B, Z)
 import numpy as np
 from scipy.integrate import quad_vec
 from scipy.constants import pi, c, h, e, m_e
@@ -10,10 +11,7 @@ v = c*np.sqrt(1 - 1/gamma**2)
 
 preFactor = 1e10*2*h/(m_e*c)  # Angstroms
 
-#%%
-# Calculation of absorptive scattering factor
 
-#The lobato parameterisation of the the elastic scattering factors is used, here stored in a text file
 lobatoArray = [[6.473848488352918e-03,-4.901925767802290e-01,5.732841603908765e-01,-3.794033014839905e-01,5.544264747740791e-01,2.785198853791489e+00,2.776204283306448e+00,2.775385910506251e+00,2.767593028672588e+00,2.765118976429275e+00],
 [3.057451160998355e+00,-6.200447791273253e+01,6.400555370846145e+01,-5.001325785427806e+00,1.517988287005264e-01,1.089672487260788e+00,9.398387981431211e-01,9.252890343862655e-01,8.229474987086506e-01,5.773931106754022e-01],
 [3.926222728861479e+00,-4.548619626399980e+00,2.193353128786585e+00,6.994512650339657e-02,2.098642248519376e-03,8.142760135172804e+00,4.989410770078558e+00,4.144289992394109e+00,4.019223150656802e-01,1.564790347198236e-01],
@@ -127,16 +125,16 @@ def lobato(s, Z):
         ab[4]*(2 + ab[9]*g**2)/(1 + ab[9]*g**2)**2
     return f
 
-def integrand(sx, sy, s, M, Z):
+def integrand(sx, sy, s, B, Z):
     s1 = np.sqrt((s/2 + sx)**2 + sy**2)
     s2 = np.sqrt((s/2 - sx)**2 + sy**2)
     s_square = sx**2 + sy**2 - (s**2/4)
-    result = lobato(s1, Z)*lobato(s2, Z)*(1 - np.exp(-2*M*s_square))
+    result = lobato(s1, Z)*lobato(s2, Z)*(1 - np.exp(-2*B*s_square))
     return result
 
-def integral1(sy, s, M, Z):
-    return quad_vec(integrand, 0, np.inf, args=(sy, s, M, Z))[0]
+def integral1(sy, s, B, Z):
+    return quad_vec(integrand, 0, np.inf, args=(sy, s, B, Z))[0]
 
-def fprime(s, M, Z):
-    return c/v*preFactor*4*quad_vec(integral1, 0, np.inf, args=(s, M, Z))[0]
+def fprime(s, B, Z):
+    return c/v*preFactor*4*quad_vec(integral1, 0, np.inf, args=(s, B, Z))[0]
 
