@@ -233,7 +233,7 @@ fig, ax = plt.subplots(figsize= (10, 10), layout="tight")
 ax.set_xlabel("s (Å⁻¹)", fontsize=12)
 ax.set_ylabel("f' (Å)", fontsize=12)
 for B in Bvals:
-    ydata = fprime(svals, B, Z)
+    ydata = fprime(svals, B, element)
     ax.plot(svals, ydata, label="B =" + str(B))
 plt.legend()
 
